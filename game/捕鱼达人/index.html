@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+
+<title>捕鱼达人</title>
+<script src="https://libs.baidu.com/jquery/1.7.2/jquery.min.js"></script>
+<link rel="stylesheet" type="text/css" href="./css/default.min.css"/>
+<style>
+.module{
+	width: 1024px;
+	height: 668px;
+	overflow: hidden;
+}
+#bg{
+	background-image: url(./images/game_bg_2_hd.jpg);
+	background-size: 100%;
+	background-repeat: no-repeat;
+	margin: 0 auto;
+}
+.mask{
+	position: absolute;
+	z-index: 5;
+	width: 1024px;
+	height: 668px;
+	overflow: hidden;
+}
+.fish{
+	overflow: hidden;
+	position: absolute;
+}
+.fish1{
+	width: 55px;
+	height: 37px;
+	overflow: hidden;
+}
+.fish2{
+	width: 78px;
+	height: 64px;
+}
+.fish3{
+	width: 72px;
+	height: 56px;
+}
+.fish4{
+	width: 77px;
+	height: 59px;
+}
+.fish5{
+	width: 107px;
+	height: 122px;
+}
+.fish6{
+	width: 105px;
+	height: 79px;
+}
+.fish7{
+	width: 92px;
+	height: 151px;
+}
+
+.swiming{
+	position: absolute;
+	-webkit-animation: swim 1s steps(1,start) infinite;
+}
+
+.lv1{
+	-webkit-animation: run 40s linear 1;
+}
+.lv2{
+	-webkit-animation: run 36s linear 1;
+}
+.lv3{
+	-webkit-animation: run 32s linear 1;
+}
+.lv4{
+	-webkit-animation: run 28s linear 1;
+}
+
+.pause{
+	animation-play-state:paused;
+	-webkit-animation-play-state:paused;
+}
+
+.rotate{
+	transform: rotateZ(180deg);
+}
+@keyframes swim{
+	0%{
+		top:0;
+	}
+	33%{
+		top:-100%;
+	}
+	66%{
+		top:-200%;
+	}
+	100%{
+		top: -300%;
+	}
+}
+@keyframes run{
+	0%{
+		left:-160px;
+	}
+	100%{
+		left: 100%;
+	}
+}
+
+.cannon-box{
+	position: absolute;
+	bottom: -2px;
+	left: 50%;
+	z-index: 10;
+	width: 765px;
+	height:72px;
+	margin-left: -380px;
+	background-image: url(./1/bottom-bar.png);
+}
+.cannon{
+	width: 170px;
+	height: 90px;
+	position: absolute;
+	bottom: 0;
+	left: 50%;
+	margin-left: -35px;
+}
+.turret-box{
+	position: absolute;
+	bottom: 2px;
+	width: 74px;
+}
+.turret{
+	width: 74px;
+	height: 74px;
+	position: absolute;
+	bottom: auto;
+	cursor: pointer;
+	background-image: url(./1/cannon1.png);
+	transform-origin: bottom center;
+	margin-top: 14px;
+}
+.bullet-box{
+	width: 74px;
+	height: 74px;
+	margin-top: 14px;
+	text-align: center;
+	bottom: auto;
+	position: absolute;
+	transform-origin: bottom center;
+}
+.bullet{
+/*	width: 40px;
+    height: 44px;
+    position: absolute;
+    bottom: 70px;
+    left: 50%;
+    margin-left: -20px;
+    background-image: url(./1/bullet.png);
+    background-repeat: no-repeat;
+    background-position-x: 0px;*/
+    /*width: 40px;
+    height: 44px;*/
+    left: 25%;
+    left: auto;
+    bottom: 35px;
+    position: absolute;
+    position: relative;
+    background-image: url(./1/bullet.png?);
+    background-repeat: no-repeat;
+    background-position-x: 0px;
+    
+}
+.button{
+	width: 44px;
+	height: 31px;
+	margin-top: 50px;
+	cursor: pointer;
+	position: relative;
+
+}
+.minus{
+	background-image: url(./1/cannon_minus.png);
+}
+.plus{
+	margin-left: 75px;
+	background-image: url(./1/cannon_plus.png);
+}
+.price-box{
+	padding: 44px 0px 0px 20px;
+}
+.price-box .left{
+	width: 20px;
+    height: 24px;
+    margin-right: 3px;
+    background-image: url(./1/price_min.png);
+    
+}
+</style>
+</head>
+<body>
+	<div class="main">
+		<div class="module">
+			<div class="mask">
+				
+				<div class="cannon-box clear">
+					<div class="price-box abs clear">
+						<div class="left"></div>
+						<div class="left"></div>
+						<div class="left"></div>
+						<div class="left"></div>
+						<div class="left"></div>
+						<div class="left"></div>
+					</div>
+					<div class="cannon">
+						<div class="minus button left"></div>
+						<div class="left rel">
+							<div class="turret"></div>
+						</div>
+						<div class="plus button left"></div>
+					</div>
+					
+				</div>
+			</div>
+			<canvas id="bg" width="1024" height="668"></canvas>
+		</div>
+	</div>
+</body>
+
+<script type="text/javascript">
+	var fishs=[];
+	var fish_data=[
+			[55,37],
+			[78,64],
+			[72,56],
+			[77,59],
+			[107,122],
+			[105,79],
+			[92,151]
+		];
+	var bus=[];
+	var size=[
+		{width:45,height:25},
+		{width:68,height:50},
+		{width:62,height:35},
+		{width:67,height:40},
+		{width:97,height:103},
+		{width:95,height:60},
+		{width:82,height:125},
+	]
+	var conf={
+		index:0,
+		count:0,
+		width:1024,
+		height:668,
+		_x:-160,
+		_y:160,
+		cannon:0,
+		num:1,
+		speend:5,
+		price:0
+	};
+	var mask=$(".mask");
+	//实例化鱼~
+	refresh(rand(3));
+	setInterval(function(){
+		refresh(rand(3)-1);
+	},3000);
+
+	conf.key=setInterval(function(){
+		var time=new Date().getTime();
+		var tmp={};
+
+		$.each(bus,function(i,k){
+			try{
+				k.index=i;
+				var list=[];
+				var obj=getSize(k);
+				
+				//记录被这颗子弹击中的鱼
+				$.each(fishs,function(n,m){
+					if(!m.die&&hitTest(getSize(m.ele),obj)){
+						list.push(m);
+						m.die=true;
+					}
+				})
+				//鱼 与 子弹 销毁
+				if(list.length>0||k.offset().left<0||k.offset().left>conf.width||k.offset().top<0||k.offset().top>conf.height){
+					bus.splice(k.index,1);
+					if(list.length>0){
+						k.stop().attr("src","./1/web"+k.lv+".png").css({background:"none"}).fadeOut(500);
+					}
+				}
+				
+				$.each(list,function(index,key){
+					try{
+						
+						priceAni(key.lv*10);
+					}catch(e){
+						console.log(e)
+					}
+					
+					key.ele.addClass("die pause").fadeOut(500,function(){key.ele.remove();});
+				})
+				
+			}catch(e){
+				
+			}
+		});
+		try{
+			$.each(fishs,function(i,k){
+				if(k.ele&&time>k.endTime){
+					k.ele.remove();
+					k.die=true;
+					fishs.splice(i,1);
+				}
+			});
+			
+		}catch(e){}
+	},120);
+
+	//创建随机鱼群
+	function refresh(n){
+		for(var i=0;i<n;i++){
+			fishs.push(new Fish(conf.index++));
+		}
+	}
+	
+	//鱼类
+	function Fish(id){
+		var dom=null;
+		var that=this;
+		this.id=id+1;
+		this.num=rand(7);
+		this.lv=Math.floor(this.num/2)+1;
+		this.die=false;
+		this.width=fish_data[this.num-1][0];
+		this.height=fish_data[this.num-1][1];
+		this.endTime=new Date().getTime()+33*1000;
+		this.key=Math.random().toString(36).split(".")[1];
+		this.ele=$('<div class="fish fish'+this.num+" lv"+this.lv+'"><img class="swiming" src="./images/fish'+this.num+'.png"/></div>').appendTo(mask);
+		this.ele.lv=this.lv;
+		this.ele.w=size[this.num-1].width;
+		this.ele.h=size[this.num-1].height;
+		this.ele.left=0;
+		this.ele.top=0;
+		this.y=rand(conf.height)-conf._y;
+		this.ele.css({
+			top:this.y,left:conf._x
+		}).on("click",function(){
+			return this.key;
+		})
+		return this;
+	}
+	
+	$(".mask").on("click",".button",function(){
+		var num=($(this).hasClass("minus")?-1:1)
+		conf.cannon=(conf.cannon+num+7)%7;
+		conf.martop=(7-conf.cannon)*3;
+		
+		$(".turret").css({
+			backgroundImage:"url(./1/cannon"+(conf.cannon+1)+".png)",
+			marginTop:(7-conf.cannon)*3,
+			height:66+(conf.cannon*(conf.cannon<3?0:4))});
+	})
+
+	$(".turret,.mask").on("click",function(e){
+		e=e||window.event;
+		if(e.target!==$(this)[0]&&$(e.target).hasClass("fish"))return;
+		if($(e.target).hasClass("minus"))return;
+		var height=$(this).height()+5;
+		$(".turret").css({transform:"rotateZ("+conf.deg+"deg)"});		
+		var num=bus.push($('<div class="bullet-box"><img class="bullet" src="./1/bullet'+(conf.cannon+1)+'.png "/></div>').appendTo($(".turret").parent()).css({transform:"rotateZ("+conf.deg+"deg)"})
+			.children().css({backgroundPositionX:-conf.cannon*40}).fadeIn(50).animate({bottom:conf.width*1.5},conf.speend*1000,function(){
+				$(this).data("no",1);
+				$(this).parent().remove();
+			}))-1;
+		bus[num].w=bus[num].width();
+		bus[num].h=bus[num].height();
+		bus[num].left=10;
+		bus[num].top=10;
+		bus[num].lv=conf.cannon+1;
+	})
+	
+	$(".mask").on("mousemove",function(e){
+		e=e||window.event;
+		if(e.target!==$(this)[0]&&!$(e.target).hasClass("fish"))return;
+		conf.deg=(e.offsetX/conf.width*180)-95;
+		$(".turret").css({transform:"rotateZ("+conf.deg+"deg)"});
+	})
+	//随机数
+	function rand(max){
+		return Math.floor(Math.random()*max+1);
+	}
+	
+	function hitTest(o, d) {
+		
+		if(o.x*o.y<0||d.x*d.y<0)return false;
+	    var px, py;  
+	  
+	    px = o.x <= d.x ? d.x : o.x;  
+	    py = o.y <= d.y ? d.y : o.y;  
+	  
+	    // 判断点是否都在两个对象中  
+	    if (px >= o.x && px <= o.x + o.w && py >= o.y && py <= o.y + o.h && px >= d.x && px <= d.x + d.w && py >= d.y && py <= d.y + d.h) {  
+	        return true;  
+	    } else {  
+	        return false;  
+	    }  
+	}
+	function getSize(obj){
+		//碰撞检测有误差 修正宽高属性
+		return obj?{
+	        //x: getDefaultStyle(obj, 'left'),
+	        //y: getDefaultStyle(obj, 'top'),
+	        //w: getDefaultStyle(obj, 'width'),
+	        //h: getDefaultStyle(obj, 'height')
+	        x:obj.offset().left+obj.left,
+	        y:obj.offset().top+obj.top,
+	        w:obj.w,
+	        h:obj.h
+	    }:false;
+	}
+	function priceAni(num){
+		var tmp=(conf.price+"").split("");
+		var $dom=$(".price-box .left");
+		var ary=[];
+		conf.price+=num;
+		ary=("000000".substring(0,6-(conf.price+"").length)+conf.price).split("");
+		$.each(ary,function(i,k){
+			k=parseInt(k);
+			$dom.eq(i).css({backgroundPositionX:-k*20});
+		})
+	}
+	function getDefaultStyle(obj, attribute) {
+	    return parseInt(obj.currentStyle ? obj.currentStyle[attribute] : document.defaultView.getComputedStyle(obj, false)[attribute]);  
+	}
+</script>
+</html>
