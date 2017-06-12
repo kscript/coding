@@ -423,12 +423,7 @@
 		//if(e.target!==$(this)[0])return;
 		conf.deg=(e.offsetX/conf.width*180)-90;
 		//console.log(conf.deg,e.offsetX,e.offsetY,Math.sin(e.offsetX))
-		if(conf.deg<45){
-			conf.deg+=2;
-		}
-		if(conf.deg>135){
-			conf.deg-=2;
-		}
+		conf.deg+=~~(conf.deg/15)-6;
 		$(".turret").css({transform:"rotateZ("+conf.deg+"deg)"});
 	})
 	//随机数
