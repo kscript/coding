@@ -4,7 +4,7 @@
 	overflow: hidden;
 }
 #bg{
-	background-image: url(./images/game_bg_2_hd.jpg);
+	background-image: url(../images/game_bg_2_hd.jpg);
 	background-size: 100%;
 	background-repeat: no-repeat;
 	margin: 0 auto;
@@ -141,7 +141,7 @@
 	width: 765px;
 	height:72px;
 	margin-left: -380px;
-	background-image: url(./1/bottom-bar.png);
+	background-image: url(../1/bottom-bar.png);
 }
 .cannon{
 	width: 170px;
@@ -162,7 +162,7 @@
 	position: absolute;
 	bottom: auto;
 	cursor: pointer;
-	background-image: url(./1/cannon1.png);
+	background-image: url(../1/cannon1.png);
 	transform-origin: bottom center;
 	margin-top: 14px;
 }
@@ -182,7 +182,7 @@
     bottom: 70px;
     left: 50%;
     margin-left: -20px;
-    background-image: url(./1/bullet.png);
+    background-image: url(../1/bullet.png);
     background-repeat: no-repeat;
     background-position-x: 0px;*/
     /*width: 40px;
@@ -192,7 +192,7 @@
     bottom: 35px;
     position: absolute;
     position: relative;
-    background-image: url(./1/bullet.png?);
+    background-image: url(../1/bullet.png?);
     background-repeat: no-repeat;
     background-position-x: 0px;
     
@@ -206,11 +206,11 @@
 
 }
 .minus{
-	background-image: url(./1/cannon_minus.png);
+	background-image: url(../1/cannon_minus.png);
 }
 .plus{
 	margin-left: 75px;
-	background-image: url(./1/cannon_plus.png);
+	background-image: url(../1/cannon_plus.png);
 }
 .price-box{
 	padding: 44px 0px 0px 20px;
@@ -219,5 +219,5 @@
 	width: 20px;
     height: 24px;
     margin-right: 3px;
-    background-image: url(./1/price_min.png);
+    background-image: url(../1/price_min.png);
 }
