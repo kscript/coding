@@ -3,202 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <title>捕鱼达人</title>
-<script src="//libs.baidu.com/jquery/1.7.2/jquery.min.js"></script>
+<script src="https://libs.baidu.com/jquery/1.7.2/jquery.min.js"></script>
 <link rel="stylesheet" type="text/css" href="./css/default.min.css"/>
-<!-- <link rel="stylesheet" type="text/css" href="/Public/css/default.min.css"/> -->
-<style>
-.module{
-	width: 1024px;
-	height: 668px;
-	overflow: hidden;
-}
-#bg{
-	background-image: url(./images/game_bg_2_hd.jpg);
-	background-size: 100%;
-	background-repeat: no-repeat;
-	margin: 0 auto;
-}
-.mask{
-	position: absolute;
-	z-index: 5;
-	width: 1024px;
-	height: 668px;
-	overflow: hidden;
-	/*cursor: none;*/
-}
-.fish{
-	overflow: hidden;
-	position: absolute;
-}
-.fish1{
-	width: 55px;
-	height: 37px;
-	overflow: hidden;
-}
-.fish2{
-	width: 78px;
-	height: 64px;
-}
-.fish3{
-	width: 72px;
-	height: 56px;
-}
-.fish4{
-	width: 77px;
-	height: 59px;
-}
-.fish5{
-	width: 107px;
-	height: 122px;
-}
-.fish6{
-	width: 105px;
-	height: 79px;
-}
-.fish7{
-	width: 92px;
-	height: 151px;
-}
-
-.swiming{
-	position: absolute;
-	-webkit-animation: swim 1s steps(1,start) infinite;
-}
-
-.lv1{
-	-webkit-animation: run 40s linear 1;
-}
-.lv2{
-	-webkit-animation: run 36s linear 1;
-}
-.lv3{
-	-webkit-animation: run 32s linear 1;
-}
-.lv4{
-	-webkit-animation: run 28s linear 1;
-}
-
-.pause{
-	animation-play-state:paused;
-	-webkit-animation-play-state:paused;
-}
-
-.rotate{
-	transform: rotateZ(180deg);
-}
-@keyframes swim{
-	0%{
-		top:0;
-	}
-	33%{
-		top:-100%;
-	}
-	66%{
-		top:-200%;
-	}
-	100%{
-		top: -300%;
-	}
-}
-@keyframes run{
-	0%{
-		left:-160px;
-	}
-	100%{
-		left: 100%;
-	}
-}
-
-.cannon-box{
-	position: absolute;
-	bottom: -2px;
-	left: 50%;
-	z-index: 10;
-	width: 765px;
-	height:72px;
-	margin-left: -380px;
-	background-image: url(./1/bottom-bar.png);
-}
-.cannon{
-	width: 170px;
-	height: 90px;
-	position: absolute;
-	bottom: 0;
-	left: 50%;
-	margin-left: -35px;
-}
-.turret-box{
-	position: absolute;
-	bottom: 2px;
-	width: 74px;
-}
-.turret{
-	width: 74px;
-	height: 74px;
-	position: absolute;
-	bottom: auto;
-	cursor: pointer;
-	background-image: url(./1/cannon1.png);
-	transform-origin: bottom center;
-	margin-top: 14px;
-}
-.bullet-box{
-	width: 74px;
-	height: 74px;
-	margin-top: 14px;
-	text-align: center;
-	bottom: auto;
-	position: absolute;
-	transform-origin: bottom center;
-}
-.bullet{
-/*	width: 40px;
-    height: 44px;
-    position: absolute;
-    bottom: 70px;
-    left: 50%;
-    margin-left: -20px;
-    background-image: url(./1/bullet.png);
-    background-repeat: no-repeat;
-    background-position-x: 0px;*/
-    /*width: 40px;
-    height: 44px;*/
-    left: 25%;
-    left: auto;
-    bottom: 35px;
-    position: absolute;
-    position: relative;
-    background-image: url(./1/bullet.png?);
-    background-repeat: no-repeat;
-    background-position-x: 0px;
-    
-}
-.button{
-	width: 44px;
-	height: 31px;
-	margin-top: 50px;
-	cursor: pointer;
-	position: relative;
-
-}
-.minus{
-	background-image: url(./1/cannon_minus.png);
-}
-.plus{
-	margin-left: 75px;
-	background-image: url(./1/cannon_plus.png);
-}
-.price-box{
-	padding: 44px 0px 0px 20px;
-}
-.price-box .left{
-	width: 20px;
-    height: 24px;
-    margin-right: 3px;
-    background-image: url(./1/price_min.png);
-    
-}
-</style>
+<link rel="stylesheet" type="text/css" href="./css/style.css"/>
 </head>
 <body>
 	<div class="main">
@@ -223,6 +30,9 @@
 							<div class="turret"></div>
 						</div>
 						<div class="plus button left"></div>
+					</div>
+					<div class="timer">
+						<div class="gradient"></div>
 					</div>
 					
 				</div>
@@ -282,7 +92,7 @@
 
 	//定时刷新随机鱼群
 	setInterval(function(){
-		refresh(rand(3)-1);
+		refresh(rand(3));
 	},3000);
 
 	function refresh(n){
@@ -308,8 +118,9 @@
 				$.each(fishs,function(n,m){
 					if(!m.die&&hitTest(getSize(m.ele),obj)){
 						isHit=true;
-						//鱼的等级+1生命值+1,子弹等级+1伤害值+15
-						m.hp-=k.lv*15;
+						//鱼的等级+1生命值+1,子弹等级+1伤害值+12
+						//调低伤害
+						m.hp-=k.lv*5+5;
 						list.push(m);
 					}
 				})
@@ -332,6 +143,7 @@
 						}
 						
 					})
+
 				}
 				
 				
@@ -349,7 +161,7 @@
 				}
 			})
 		}catch(e){}
-	},120);
+	},100);
 
 
 	
@@ -396,14 +208,21 @@
 	$(".turret,.mask").on("click",function(e){
 		//设置冷却时间
 		if(new Date - conf.timer<conf.cooling)return;
+		$(".timer .gradient").addClass("active");
+		setTimeout(function(){
+			$(".timer .gradient").removeClass("active");
+		},800);
 		conf.timer=+new Date;
+
 		e=e||window.event;
 		if(e.target!==$(this)[0]&&$(e.target).hasClass("fish"))return;
 		if($(e.target).hasClass("minus"))return;
 		var height=$(this).height()+5;
-		$(".turret").css({transform:"rotateZ("+conf.deg+"deg)"});		
+		$(".turret").css({transform:"rotateZ("+conf.deg+"deg)"});	
+		console.log(conf.cannon);	
+
 		var num=bus.push($('<div class="bullet-box"><img class="bullet" src="./1/bullet'+(conf.cannon+1)+'.png "/></div>').appendTo($(".turret").parent()).css({transform:"rotateZ("+conf.deg+"deg)"})
-			.children().css({backgroundPositionX:-conf.cannon*40}).fadeIn(50).animate({bottom:conf.width*1.5},conf.speend*1000,function(){
+			.children().css({bottom:30+conf.cannon*4,backgroundPositionX:-conf.cannon*40}).fadeIn(50).animate({bottom:conf.width*1.5},conf.speend*1000,function(){
 				$(this).data("no",1);
 				$(this).parent().remove();
 			}))-1;
@@ -413,7 +232,7 @@
 		bus[num].top=10;
 		bus[num].lv=conf.cannon+1;
 		//发射子弹消耗金币
-		priceAni(-bus[num].lv*2);
+		priceAni(-bus[num].lv*3);
 	})
 
 	// 瞄准目标 标记:精确度算法有待提高
@@ -423,7 +242,7 @@
 		//if(e.target!==$(this)[0])return;
 		conf.deg=(e.offsetX/conf.width*180)-90;
 		//console.log(conf.deg,e.offsetX,e.offsetY,Math.sin(e.offsetX))
-		conf.deg+=~~(conf.deg/15)-6;
+		conf.deg+=~~(conf.deg/15)*2-6;
 		$(".turret").css({transform:"rotateZ("+conf.deg+"deg)"});
 	})
 	//随机数
