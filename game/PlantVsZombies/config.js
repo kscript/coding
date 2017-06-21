@@ -8,7 +8,7 @@ var conf={
 	plant:$(".plant-list"),//植物选择列表
 	zombie:$(".zombies-list"),//僵尸容器
 	interface:{
-		path:'./images/interface/',//界面游戏背景
+		path:'../images/interface/',//界面游戏背景
 		list:[
 			["background1.jpg","background1unsodded.jpg","background1unsodded_1.jpg","background1unsodded2.jpg"],
 			["background2.jpg"],
@@ -19,7 +19,7 @@ var conf={
 		]
 	},
 	zombies:{
-		path:'./images/Zombies/',
+		path:'../images/Zombies/',
 		list:[
 			{name:"BackupDancer"},
 			{name:"BucketheadZombie"},
@@ -42,7 +42,7 @@ var conf={
 		]
 	},
 	plants:{
-		path:"./images/Plants/",
+		path:"../images/Plants/",
 		list:[
 			{name:"SunFlower"},
 			{name:"Blover"},
