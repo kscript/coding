@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	<script src="./number.js"></script>
+	<style>
+		#show{
+			width: 800px;
+			padding-top: 0px;
+			margin: 0 auto;
+		}
+		.left{
+			float: left;
+		}
+		.right{
+			float: right;
+		}
+
+		.node{
+			margin: 50px 10px 0px;
+		}
+		.root{
+			display: inline-block;
+			font-size: 16px;
+			width: 32px;
+			height: 32px;
+			line-height: 32px;
+			text-align: center;
+			border-radius: 50%;
+			color:#fff;
+			background-color: #000;
+		}
+	</style>
+	<script>
+		var tree=new Tree();
+		tree.run('insert',[11,7,15,5,9,13,20,3,6,8,10,12,14,18,25]);
+		tree.show=function(id){
+			build(document.getElementById(id||'show'),this.display());
+		}
+
+		function build(cxt,node){
+			if(node.left||node.right){
+				if(node.left){
+					build(creat(cxt,node.left,0),node.left);
+
+				}
+				if(node.right){
+					build(creat(cxt,node.right,1),node.right);
+				}
+			}else{
+				return false;
+			}
+
+		}
+		function creat(cxt,node,mod){
+			var div=document.createElement("div");
+			div.innerHTML='<span class="root">'+node.key+'<span>';
+			div.className="node "+['left','right'][mod];
+			cxt.appendChild(div);
+			return div;
+		}
+	</script>
+</head>
+<body>
+	<div class="page">
+		<div id="show">
+
+		</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>植物大战僵尸</title>
+<!-- <script src="https://libs.baidu.com/jquery/1.7.2/jquery.min.js"></script> -->
+<script>!window.jQuery&&document.write('<script src="/Public/js/jquery.min.js"><\/script>');</script>
+<link rel="stylesheet" type="text/css" href="/Public/css/default.min.css"/>
+<link rel="stylesheet" type="text/css" href="/Public/css/animate.min.css"/>
+<style>
+body{
+	background: #000;
+}
+.scene{
+	width: 1320px;
+	height: 600px;
+	margin:16px auto;
+	overflow: hidden;
+	position: relative;
+}
+.plant-list{
+/* 	background-image: url(./images/interface/SeedChooser_Background.png);
+width: 560px;
+height: 84px;
+z-index: 20;
+top: 0;
+left: 0px;
+position: absolute;
+background-size: 12.5%;
+background-repeat-y: no-repeat; */
+background: 
+url(./images/interface/bgHeader.jpg) no-repeat top,
+url(./images/interface/bgFooter.jpg) no-repeat bottom,
+url(./images/interface/bgBody.jpg) repeat-y center;
+    height: 68px;
+    width: 520px;
+-webkit-background-size: 100%;
+background-size: 100%;
+position: absolute;
+top: 0;
+left: 0;
+z-index: 20;
+-webkit-tap-highlight-color: rgba(0,0,0,0);  
+-webkit-tap-highlight-color: transparent;
+}/*::selection{
+	background: rgba(0,0,0,0);
+	background-color: transparent;
+}::-moz-selection{
+	background: rgba(0,0,0,0);
+	background-color: transparent;
+}*/
+.plant-list .col1{
+	width: 12.1%;
+    height: 64px;
+	border-right: 2px solid #a95c35;
+	float: left;
+	text-align: center;
+	cursor: pointer;
+	position: relative;
+}
+.plant-list .col1 .mk{
+	width: 100%;
+	height: 60px;
+	overflow: hidden;
+	/*position: absolute;
+	top: 0;
+	left: 0;*/
+	position: relative;
+	z-index: 10;
+	top: 3px;
+	background: rgba(0,0,0,.3);
+}
+
+/*.plant-list .play{	
+    max-width: 12%;
+    height: 60px;
+    margin: 0 auto;
+    margin-top: 8px;
+}*/
+.plant-list .play {
+    position: absolute;
+    left: 0;
+    top: 2px;
+    z-index: 1;
+    box-sizing: border-box;
+    padding: 5px;
+}
+.seats{
+	width: 756px;
+    height: 515px;
+    position: absolute;
+    top: 60px;
+    left: 240px;
+    z-index:10!important;
+    cursor: pointer;
+}
+.mask{
+	z-index: 5;
+}
+.seat-list .col1{
+	position: absolute;
+	max-width: 10%;
+}
+.seat-list .col1.SunFlower.fade img{
+	opacity: 0;
+}
+.seat-list .col1.SunFlower.fade{
+    background: url(./images/Plants/SunFlower/SunFlower.gif) bottom;
+}
+.seat-list .col1.SunFlower img{
+	/*transition: all .5s;*/
+	
+}
+.seat-list .col1.SunFlower.fade img{
+	-webkit-animation: fadeOut 3s ease 1 ;/*alternate;*/
+}
+.seat-list .col1.SunFlower{
+	height: 75px;
+    overflow: hidden;
+    background:none;
+    transition: background-image .3s;
+}
+
+.zombies-list{
+	width: 100%;
+	position: relative;
+	z-index: 10;
+}
+.zombies-list .col1{
+	position: absolute;
+	right: -150px;
+	top: 100px;
+}
+.zombies-list .run{
+/*	position: absolute;
+	right: -150px;
+	top: 100px;*/
+}
+.handle{
+	width: 100%;
+	height: 1px;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 999;
+}
+</style>
+<style>
+.pause{
+	animation-play-state: paused!imporant;
+    -webkit-animation-play-state: paused!important;
+}
+.animate.pause .col1,.animate.pause .handle img{
+	animation-play-state: paused!imporant;
+    -webkit-animation-play-state: paused!important;
+}
+.animate .zombies-list .col1{
+	-webkit-animation: run 50s linear 1;
+}
+
+@keyframes run{
+	0%{
+		z-index: 100;
+	}
+	100%{
+		right: 90%;
+		display: none;
+	}
+}
+@keyframes fadeOut{
+	0%{
+		opacity: 1;
+	}
+	100%{
+		opacity: 0;
+	}
+}
+@keyframes fadeIn{
+	0%{
+		opacity: 0;
+	}
+	100%{
+		opacity: 1;
+	}
+}
+.animate .reship .mk.lv0{
+	-webkit-animation: mk 10s ease 1;
+}
+.animate .reship .mk.lv1{
+	-webkit-animation: mk 12s ease 1;
+}
+.animate .reship .mk.lv2{
+	-webkit-animation: mk 16s ease 1;
+}
+.animate .reship .mk.lv3{
+	-webkit-animation: mk 20s ease 1;
+}
+.animate .reship .mk.lv4{
+	-webkit-animation: mk 24s ease 1;
+}
+.animate .reship .mk.lv5{
+	-webkit-animation: mk 24s ease 1;
+}
+.animate .reship .mk.lv6{
+	-webkit-animation: mk 28s ease 1;
+}
+.animate .reship .mk.lv7{
+	-webkit-animation: mk 32s ease 1;
+}
+.animate .reship .mk.lv8{
+	-webkit-animation: mk 36s ease 1;
+}
+.animate .reship .mk{height: 0;}
+@keyframes mk{
+	0%{
+		height: 60px;		
+	}
+	100%{
+		height: 0px;
+		
+	}
+}
+
+.handle .shine{
+	z-index: 400;
+	position: absolute;
+	width: 79px;
+	height: 79px;
+	top: 0;
+	left: 0;
+	cursor: pointer;
+	-webkit-animation: scale 30s ease 1,sport 30s linear 1;
+}
+.handle .bullet{
+	z-index: 360;
+	position: absolute;
+	width: 33px;
+	height: 20px;
+	top: 0;
+	left: 0;
+	cursor: pointer;
+	-webkit-animation: sportX 30s linear 1;
+}
+
+@keyframes scale{
+	0%{
+		transform: scale(.4);
+	}
+	100%{
+		transform: scale(.6);
+	}
+}
+@keyframes sport{
+	0%{
+		z-index: 400;
+	}
+	100%{
+		margin-left: 30px;
+		top: -200px;
+	}
+}
+@keyframes sportX{
+	0%{
+		
+	}
+	100%{
+		left: 120%;
+	}
+}
+</style>
+</head>
+<body>
+	<div class="main">
+			
+		<div class="scene animate">
+			<div class="handle">
+
+			</div>
+			<div class="plant-list ">
+
+			</div>
+			<div class="gif seats mask">
+				<div class="seat-list">
+				</div>
+			</div>
+
+			<div class="zombies-list">
+
+			</div>
+		</div>
+	</div>
+	<script src="./config.js"></script>
+	<script src="./item.js"></script>
+	<script src="./events.js"></script>
+	<script src="./tests.js"></script>
+	<script>
+		var maps=[];
+		var coors={};
+		var zombies={};
+		var plants={};
+		var $items={};
+		var bullets={};
+
+		var notes={};
+		var selection=[
+			'Peashooter',
+			'PotatoMine'
+		];
+
+		var player={
+			paused:false,//是否暂停
+			interval:0,
+			timeout:false,
+			price:0,//用户拥有的金币
+			shine:0,//阳光值
+			list:[],//已被攻陷列
+			pause:function(){
+				this.pauseTime=+new Date;
+				this.interval=0;
+				conf.scene.addClass("pause");
+				this.paused=true;
+			},
+			play:function(){
+				this.interval=(new Date)-this.pauseTime;
+				conf.scene.removeClass("pause");
+				this.paused=false;
+			}
+		}
+
+		//设置植物和僵尸的引用组
+		conf['_zombie_']={
+			groups:[
+				zombies,
+				$items
+			]
+		};
+		conf['_plant_']={
+			groups:[
+			]
+		};
+		conf['_seat_']={
+			groups:[
+				plants,
+				$items
+			]
+		};
+		//记录用户选择的植物id
+		conf.selectPlant=[0,1,2,3,4,5,6,16];
+
+		//设置游戏背景
+		conf.scene.css({
+			width:conf.width,
+			height:conf.height,
+			backgroundImage:"url("+conf.interface.path+conf.interface.list[conf.lv][conf.index]+")"
+		})
+		
+		$.each(new Array(5),function(i){
+			//生成五个并排的僵尸
+			//new Zombie(10,0,i%5,'zombie');
+		})
+
+		//植物选择栏填充
+		$.each(conf.selectPlant,function(i,m){
+			new Plant(m,0,0,'plant');
+		})
+		
+		//运行游戏
+		run();
+		
+		//定时随机刷新僵尸
+		setInterval(function(){
+			randRefreshZombies(rand(3),rand(10),rand(5))
+		},10000);
+
+		//随机刷新僵尸方法
+		function randRefreshZombies(num,id,y){
+			if(player.paused){return}
+			$.each(new Array(num),function(i){
+				//生成x个并排的僵尸
+				//new Zombie(10,0,i%5,'zombie');
+				//随机位置生成
+				new Zombie(id,0,y,'zombie');
+			})
+		}
+		
+		//获得了阳光值时
+		function gainSun(shine){
+			shine=+shine||0;
+			if(!player)return;
+			if(player.shine){
+				player.shine+=shine;
+			}else{
+				player.shine=shine;
+			}
+			console.log("获得了"+shine+"点阳光值,当前阳光值:"+player.shine);
+		}
+
+		//更新游戏视图
+		function refresh(now){
+			if(player.paused){
+				return;
+			}
+
+			var zom=null;
+			var zomIndex=-1;
+			var target=null;
+
+			$.each(bullets,function(index,item){
+				zom=coors[item.source.y]||[];
+				zomIndex=getCurrent(item.source.x,zom);
+				target=zom[zomIndex]||target;
+
+				if(now-item.start>20000){
+					item.ele.remove();
+					delete bullets[index];
+				}else if(target){
+					if(target.hp<1){
+						item.source.target=null;//失去目标
+					}else if(item&&target.offset.left<item.ele.offset().left){
+						item.ele.remove();
+						target.hp-=item.source.aggress;
+						if(target.hp<=0){
+							//目标生命值为0时 从coors中删除目标
+							zomIndex>-1&&coors[item.source.y].splice(zomIndex,1);
+							target.hp.die=true;
+						}
+						delete bullets[index];
+					}
+				}
+
+			})
+			
+			//坑点1 $items 为数组时 调用clear会出错 所以改为对象
+			$.each($items,function(index,item){
+
+				if(item.die||item.hp<=0){
+					if(item.mod=='seat'){
+						item.attackSource.ele.removeClass("pause");
+					}
+					item.clear();
+				}else if(item.events){
+					if(item.mod=='zombie'||now-item.oldTime>item.interval*1000){
+						if(item.attackTarget&&item.attackTarget.hp<=0){
+							item.ele.removeClass("pause");
+							item.attackTarget=null;
+						}
+						if(item.offset&&item.offset.left<160){
+							item.hit&&item.hit();
+							item.die=true;
+							item.hp=0;
+							item.clear();
+						}
+						if(player.pauseTime&&player.pauseTime>item.oldTime){
+							item.oldTime=now+(player.pauseTime-item.oldTime);
+						}
+						item.events(now);//执行周期事件
+						//item.mod=='zombie'&&(item.oldTime=now);
+					}
+				}
+			})
+
+		};
+		
+		//定时器
+		function run(){
+			refresh(+new Date);
+			if(conf.clearFrame){
+				cancelAnimationFrame(conf.rid);
+			}else{
+				conf.rid=requestAnimationFrame(run);
+			}
+		}
+		function getCurrent(x,target){
+			var count=10e4;//给定一个超范围的offset.left值,以便获取最近位置
+			var index=-1;//选中目标的coors索引
+			$.each(target,function(i,k){
+				if(k.offset&&k.offset.left<count){
+					//忽略身后的目标
+					if(k.left>=x){
+						count=k.offset.left;
+						index=i;
+					}
+					
+				}
+			})
+			return index;
+		}
+		//创建子弹
+		function sendBullet(obj){
+			if(obj){
+				var sid='bullet-'+Math.random().toString(36).slice(2);
+				bullets[sid]=obj;
+				// setTimeout(function(){
+				// 	obj.ele&&obj.ele.remove();
+				// 	delete bullets[sid];
+				// },20000);
+			}
+		}
+
+		//生成一个0~max之间的随机非负整数
+		function rand(max){
+			return ~~(Math.random()*(max||5));
+		}
+	</script>
+</body>
+</html>

@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>JS扫雷(8*8格版) By：SY  2015.7.28</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!--
+游戏:扫雷(8*8格版)
+完成时间：2015.7.28
+备注:右键标记后的检测功能未完善 未增加计时器 
+-->
+<style>
+	html,body{
+		padding: 0;
+		margin: 0;
+	}
+	table,td{
+		border:1px solid #ccc;
+	}
+	td{
+		width:32px;
+		height:32px;
+		text-align:center;
+	}
+	#main{
+		width: 308px;
+		padding: 10px;
+		background: #555;
+		margin:100px auto;
+		border-radius: 5px;
+	}
+	#games{
+		width: 100%;
+		cursor:pointer;
+	}
+	.time-box{
+		width: 100%;
+		text-align: center;
+		padding: 16px 0;
+		color: #fff;
+	}
+	#timer{
+		width: 120px;
+		height: 28px;
+		line-height: 28px;
+		margin: 0 auto;
+		border: 1px solid #eee;
+	}
+	.hit{
+		background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgBAMAAACBVGfHAAAAKlBMVEUAAAD9CQn9CQn9CQn9CQn9CQn9CQn9CQn9CQn9CQn9CQn9CQn9CQn9CQlHLes/AAAADXRSTlMAyWD106EqIArfn1MZls1a0gAAAFZJREFUKM9jIBdsQBewQBe4koAmcNcIXeDuCnQBqCaEAFQTQgCqCSGApukuCBihCEA1IQTQNN2FACM0ganqcAEoFwGgXAQwhXARQIBhcAg4oAscICWaAd50OW0vPZLjAAAAAElFTkSuQmCC) no-repeat;
+		background-color: #eee;
+	}
+</style>
+<script>
+	//选择器
+	Object.prototype.$=function(){
+		var a=arguments[0],b=a.charAt(0),c=a.substr(1,a.length),d=document;
+		return b=="#"?d.getElementById(c):(b=="."?d.getElementsByClassName(c):d.getElementsByTagName(a));
+	};
+		//创建元素
+	Object.prototype.creatElement=function(ele,set){
+		var tmp=this.appendChild(document.createElement(ele));
+		if(set){
+			for(var v in set){
+				tmp[v]=set[v]
+			}
+		}
+		return tmp;
+	}		
+		//设置属性
+	Object.prototype.set=function(key,val){
+		return this.setAttribute(key,val);
+	}
+		//获取属性
+	Object.prototype.get=function(){
+		return this.getAttribute(arguments[0]);
+	}
+		//html
+	Object.prototype.html=function(){
+		return arguments[0]!=null?this.innerHTML=arguments[0]:this.innerHTML;
+	}
+		//value
+	Object.prototype.val=function(){
+		return arguments[0]!=null?this.value=arguments[0]:this.value;
+	}				
+</script>
+
+<script>
+"use strict";
+var isOver=false,
+	map=[],
+	arr=[],
+	game={
+		lv:1,
+		init:function(){
+			this.dom=$("td");
+	        var radio=document.getElementsByName('s');
+	        for(var s=0;s<radio.length;s++){
+	            if(radio[s].checked)break;
+	        }
+	        this.lv=s+1;
+			this.creat();
+		},
+		creat:function(){
+			//创建地雷
+			var str=",";
+			var that=this;
+			for(var i=0,n;i<this.lv*4+6;i++){
+				n=re(str);
+				map[n]=1;str+=n+",";
+				this.dom[n].set("class","test")
+			}
+			//创建地图
+			
+			for(var i=0;i<this.dom.length;i++){
+				this.dom[i].set("num",i);
+			}
+	            //选择游戏难度
+	        $("#radios").onclick=function(){
+				var target= (window.event || e.target).toElement;
+				if(target.localName!="input")return;
+	            game.lv=parseInt(target.value)||1;
+	        }
+	        
+	        $("#restart").onclick=function(){
+				game.over()
+	        }
+			//设置鼠标点击事件			
+			$("#games").onclick=function(){
+				
+				var target= (window.event || e.target).toElement;
+				if(target.localName!="td")return;
+				n=Number(target.get("num"))
+				game.role(n);
+				if(isOver){
+					setTimeout(function(){
+						confirm("您赢了,是否重新开始")&&that.over();
+					},16);
+				}
+			};
+			//设定鼠标右键事件
+			document.oncontextmenu=function(){
+				var target= (window.event || e.target).toElement;
+				if(target.localName!="td")return;
+				if(event.button==2){
+					target.set("class",target.get("class")=="hit"?"":"hit");
+				}
+				return false;
+			}
+		},			
+		//运行规则
+		role:function(n,t){
+			var arr,m=0,target=this.dom[n];			
+			if(map[n]==1){
+				confirm("您输了!~\n是否重新开局？")?this.over():"do something";	
+			}else{
+				map[n]=2;//翻开状态
+				m=this.search(n);//获取周围雷数
+				if(m==0){
+					this.dom[n].set("style","background:#eee");
+					var k=this.getlist(n,1);
+					for(var j=0,u;j<k.length;j++){			
+						u=this.role(k[j],1);
+						if(u!=0){
+							target.html(u);
+							target.set("style","background:#eee");
+						}
+					}
+				}else{
+					target.html(m);
+					target.set("style","background:#eee");
+				}
+			}
+			this.test();
+	    },
+		//统计周围雷数
+		search:function(n){
+			var m=0;
+			arr=this.getlist(n);
+			for(var i=0;i<arr.length;i++){
+				if(arr[i]>=0&&arr[i]<64)
+				map[arr[i]]==1&&m++;
+			}
+			return m;
+		},
+			//获取矩阵列表			
+		getlist:function(n,t){
+			var arr=[],tmp=[];	
+			if(n>8&&n<55&&n%8!=0&&n%8!=7)	  //中部
+				  arr=[n-8-1,n-8,n-8+1,n-1,n+1,n+8-1,n+8,n+8+1];		
+			if(n!=0&&n!=7&&n!=56&&n!=63){  //四边	
+				if(n%8==0)
+					  arr=[n-8,n-8+1,n+1,n+8,n+8+1];
+				if(n%8==7)
+					  arr=[n-8-1,n-8,n-1,n+8-1,n+8];
+				if(n<7)
+					  arr=[n-1,n+1,n+8-1,n+8,n+8+1];
+				if(n>55)
+						arr=[n-8-1,n-8,n-8+1,n-1,n+1];
+			}else{//四角
+					if(n==0)
+						arr=[n+1,n+8,n+8+1];
+					if(n==7)
+						arr=[n-1,n+8-1,n+8];
+					if(n==56)
+						arr=[n-8,n-8+1,n+1];
+					if(n==63)
+						arr=[n-8-1,n-8,n-1];						  
+			}			  
+			if(t){//获取有效的未打开的区域			
+				for(var i=0,c=0;i<arr.length;i++){		
+					if(map[arr[i]]!=2&&arr[i]!=n){
+						tmp[c]=arr[i];
+						map[arr[i]]=2;
+						c++;
+					}
+				}
+				return tmp;
+			}else{
+				return arr;
+			}
+		},
+		over:function(){
+			map=[];
+			isOver=false;
+			startTime=+new Date;
+			var d=this.dom;
+			for(var i=0;i<d.length;i++){
+				d[i].innerHTML="";
+				d[i].set("class","");
+				d[i].style.background="";
+			}
+			this.init();	
+		},
+		test:function(){
+			var that=this;
+			for(var i=0,t=0;i<map.length;i++){
+				map[i]||t++;
+			}
+			if(!t){
+				isOver=true;
+			}
+		}
+	}
+	window.onload=function(){
+		var d=$("#main").creatElement("div",{"id":"games"}).creatElement("table");
+		var tr;
+		for(var i=0;i<8;i++){
+			tr=d.creatElement("tr");
+			for(var n=0;n<8;n++){
+				tr.creatElement("td");	
+			}
+		}
+		game.init();
+	}
+	function rand(num){
+		return Math.floor(Math.random()*num);
+	}
+	function re(str){
+		var num=rand(64);
+		return str.indexOf(","+num+",")==-1?num:re(str)			
+	}
+</script>
+<script>
+var startTime=+new Date;
+var clock=setInterval(function(){
+	var now=+new Date;
+	var time=~~((now-startTime)/1000);
+	var h=('0'+~~(time/3600)).slice(-2);
+	var m=('0'+~~(time/60)).slice(-2);
+	var s=('0'+time%60).slice(-2);
+	$("#timer").html([h,m,s].join(":"));
+},500);
+
+</script>
+</head>
+<div id="main">
+	<div id=radios style='display:none;cursor:pointer;font-size:13px;margin:8px;'>
+		游戏难度:
+		<input type="radio" name='s' value=1 checked=true>简单 
+		<input type="radio" name='s' value=2>一般 
+		<input type="radio" name='s' value=3>困难 
+		<input id=restart type=submit value=重新开始>
+	</div>
+	<div class="time-box">
+		<div id="timer">00:00:00</div>
+	</div>
+</div>
+
+</html>
