@@ -473,7 +473,7 @@ z-index: 20;
 			var count=10e4;//给定一个超范围的offset.left值,以便获取最近位置
 			var index=-1;//选中目标的coors索引
 			$.each(target,function(i,k){
-				if(k.offset&&k.offset.left<count){
+				if(k.offset&&k.offset.left<=count){
 					//忽略身后的目标
 					if(k.left>=x){
 						count=k.offset.left;
